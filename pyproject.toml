@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quickstart-mlx"
+version = "1.0.0"
+description = "Federated Learning with MLX and PyTorch fallback on Flower (1 Server, 3 Clients)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "flwr[simulation]>=1.13.0",
+    "numpy>=1.24.0",
+    "torch>=2.0.0",
+    "streamlit>=1.30.0",
+    "pandas>=2.0.0",
+    "altair>=5.0.0",
+]
+
+[project.optional-dependencies]
+mlx = [
+    "mlx>=0.16.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
+
+[tool.flwr.app]
+publisher = "flwrlabs"
+
+[tool.flwr.app.components]
+serverapp = "mlxexample.server_app:app"
+clientapp = "mlxexample.client_app:app"
+
+[tool.flwr.app.config]
+num-server-rounds = 3
+fraction-fit = 1.0
+fraction-evaluate = 1.0
+min-fit-clients = 3
+min-evaluate-clients = 3
+min-available-clients = 3
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 3
